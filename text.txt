@@ -1,0 +1,10 @@
+  Vacy   11     5  3  5  4  5 
+  Nasty   13     3  4  3  4  5  
+  Dany   12     3  4  5  4  5 
+  Dasha   31     4  4  3  4  5    
+  Sasha   11     3  4  3  4  3 
+  Kirill   21     5  4  5  4  4   
+  Demid   15     5  5  3  4  5  
+  Mari   17     5  4  3  4  5  
+  Katy   31     5  3  5  4  5 
+  Lia   11     3  4  3  4  5   
