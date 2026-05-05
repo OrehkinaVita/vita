@@ -63,13 +63,18 @@ public:
 			head = newNode;
 		}
 	}
-	void deleteNode(T del) {
+	int deleteNode(T del) {
 		if (head->info == del) head = head->next;
 		else {
 			Node* h = NULL;
-			for (h = head; h->next && h->next->info != del) {
-
-			}
+			Node* temp =NULL:
+			for (h = head; h->next && h->next->info != del);
+			if (h->next == NULL) return -1;
+		    temp = h->next;
+			h->next = temp->next;
+			delete temp;
+			
+			return 0;
 		}
 	}
 
