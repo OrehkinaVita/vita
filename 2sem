@@ -1,0 +1,341 @@
+// 2.1sem.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
+//
+#include <fstream>
+#include <string.h>
+#include "Student.h"
+#include <iostream>
+#include <cstdlib>
+#include "sort.h"
+
+using namespace std;
+
+bool compStudent(Student a, Student b) {
+    return a.getAverage() > b.getAverage();
+
+}
+
+int main()
+{
+    const int max_Student = 20;
+    Student gr[max_Student];
+    ifstream in("text.txt");
+    int n = 0;
+    while (in >> gr[n] && n < 10) {
+        n++;
+    }
+    in.close();
+  
+
+    Student copy[max_Student];
+
+
+    //пузырьковая
+    for (int i = 0; i < n; i++) copy[i] = gr[i];
+    booblesort(copy, n);
+    cout << "\n after sort:\n";
+    for (int i = 0; i < n; i++)
+        cout << copy[i].fullName << " " << copy[i].groupNumber << "\n";
+
+    //вставками
+    for (int i = 0; i < n; i++) copy[i] = gr[i];
+    insert(copy, n);
+    cout << "\n after sort:\n";
+    for (int i = 0; i < n; i++)
+        cout << copy[i].fullName << " " << copy[i].groupNumber << "\n";
+
+    //выбором
+    for (int i = 0; i < n; i++) copy[i] = gr[i];
+    select(copy, n);
+    cout << "\n after sort:\n";
+    for (int i = 0; i < n; i++)
+        cout << copy[i].fullName << " " << copy[i].groupNumber << "\n";
+
+    /*шелла*/
+    for (int i = 0; i < n; i++) copy[i] = gr[i];
+    shell(copy, n);
+    cout << "\n after sort:\n";
+    for (int i = 0; i < n; i++)
+        cout << copy[i].fullName << " " << copy[i].groupNumber << "\n";
+
+    /*Быстрая qsort*/
+    for (int i = 0; i < n; i++) copy[i] = gr[i];
+    stdQsort(copy, n);
+    cout << "\n after sort:\n";
+    for (int i = 0; i < n; i++)
+        cout << copy[i].fullName << " " << copy[i].groupNumber << "\n";
+
+
+
+
+    ofstream of = ofstream("student.bin");
+    of.write((char*)gr, n * sizeof(Student));
+    of.close();
+    ifstream in1 = ifstream("student.bin");
+    //длина файла
+    in1.seekg(0, in1.end);//устанавливает указатель файла в конец
+    int dl_fila = in1.tellg();
+    //кол-во записей
+    int nZ = dl_fila / sizeof(Student);
+    Student* arr = new Student[nZ];
+    in1.seekg(0, ios::beg);
+    in1.read((char*)arr, dl_fila);;
+    /*for (int i = 0; i < nZ; i++)
+        cout << arr[i].fullName << "" << arr[i].groupNumber << endl;*/
+    bool a = gr[1] > gr[0];
+    std::cout << "\n" << a << "\n";
+
+    std::cout << "\nStudents with avarage > 4.0:" << std::endl;
+    for (int i = 0; i < n; i++) {
+        if (gr[i].getAverage() > 4.0) {
+            std::cout << gr[i].fullName << " " << gr[i].groupNumber << std::endl;
+        }
+    }
+
+    return 0;
+}
+   
+
+
+ 
+//template <class T>
+//void boobleSort(T* a, int n) {
+//    int flag = 1;
+//    T h;
+//    while (flag) {
+//        flag = 0;
+//        for (int i = 1; i < n; i++) {
+//            if (a[i - 1] > a[i]) {
+//                h = a[i - 1];
+//                a[i - 1] = a[i];
+//                a[i] = h;
+//                flag = 1;
+//            }
+//        }
+//    }
+//}
+
+//int compQsortInt(const void* a, const void* b) {
+//    int* pa = (int*)a;
+//    int* pb = (int*)b;
+//    int r = *pa - *pb;
+//    //return *((int*)a) - *((int*)b);
+//    return r;
+//}
+//int main() {
+//    int arr[8] = { 12,42,18,44,55,67,94,6 };
+//    qsort(arr, 8, sizeof(int), compQsortInt);
+//
+//}
+
+
+
+
+
+..sort.h
+#pragma once
+#include "cstdlib"
+#include "Student.h"
+
+
+ 
+//пузырьком по номеру группы
+template <class T>
+void booblesort(T* a, int n) {
+	int flag = 1;
+	T h;
+	while (flag) {
+		flag = 0;
+		for (int i = 1; i < n; i++) {
+			if (a[i - 1].groupNumber > a[i].groupNumber) { 
+				h = a[i - 1];
+				a[i - 1] = a[i];
+				a[i] = h;
+				flag = 1;
+
+			}
+		}
+	}
+}
+//вставками по номеру группы
+template <class T>
+void insert(T* a, int n) {
+	T t;
+	for (int i = 1; i < n; i++) {
+		t = a[i];
+		int j = i - 1;
+		while (j >= 0 && a[j].groupNumber > t.groupNumber) {
+			a[j + 1] = a[j];
+			j--;
+		}
+		a[j + 1] = t;
+	}
+}
+
+//сортировка выбором по номеру группы
+template <class T>
+void select(T* a, int n) {
+	int min;
+	T t;
+	for (int i = 0; i < n - 1; i++) {
+		min = i;
+		for (int j = i + 1; j < n; j++) {
+			if (a[j].groupNumber < a[min].groupNumber)
+				min = j;
+		}
+		if (min != i) {
+			t = a[i];
+			a[i] = a[min];
+			a[min] = t;
+		}
+	}
+}
+
+//сортировка шелла по номмеру группы
+template <class T>
+void shell(T* a, int n) {
+	int steps[5] = { 121, 40, 13, 4, 1 };
+	int j;
+	T t;
+	for (int k = 0; k < 5; k++) {
+		int step = steps[k];
+		for (int i = step; i < n; i++) {
+			t = a[i];
+			for (j = i - step; j >= 0 && t.groupNumber < a[j].groupNumber; j -= step) {
+				a[j + step] = a[j];
+			}
+			a[j + step] = t;
+		}
+	}
+}
+
+int compStudentByGroup(const void* a, const void* b) {
+    Student* pa = (Student*)a;
+    Student* pb = (Student*)b;
+    return pa->groupNumber - pb->groupNumber;
+}
+
+template <class T>
+void stdQsort(T* a, int n) {
+	qsort(a, n, sizeof(T), compStudentByGroup);
+}
+
+
+
+
+
+
+..text.txt
+  Vacy   11     5  3  5  4  5 
+  Nasty   13     3  4  3  4  5  
+  Dany   12     3  4  5  4  5 
+  Dasha   31     4  4  3  4  5    
+  Sasha   11     3  4  3  4  3 
+  Kirill   21     5  4  5  4  4   
+  Demid   15     5  5  3  4  5  
+  Mari   17     5  4  3  4  5  
+  Katy   31     5  3  5  4  5 
+  Lia   11     3  4  3  4  5   
+
+
+
+
+
+..Student.h 
+#pragma once
+#include <fstream>
+using namespace std;
+class Student
+{
+public:
+
+	char fullName[50];
+	int groupNumber;
+	int marks[5];
+
+	Student();
+	Student(const char*, int, int*);
+	~Student();
+	void print();
+	float getAverage();
+	Student& operator= (const Student& s);
+	bool compStudent( Student b) {
+		return this->getAverage() > b.getAverage();
+
+	}
+	bool operator > (Student b) {
+		return this->getAverage() > b.getAverage();
+
+	}
+	friend istream& operator>>(istream& is, Student& s) {
+		is >> s.fullName>>s.groupNumber;
+		for (int i = 0; i < 5; i++)
+			is>>s.marks[i];
+		return is;
+	}
+	friend ostream& operator<<(ostream& is, Student& s) {
+		is << s.fullName <<" "<< s.groupNumber<<" ";
+		for (int i = 0; i < 5; i++)
+			is << s.marks[i]<<" ";
+		is << "\n";
+		return is;
+	}
+	
+};
+
+
+
+
+..student.cpp
+#include "Student.h"
+#include <string.h>
+#include <iostream>
+Student::Student()
+{
+	strcpy_s(this->fullName, 50, "");
+	this->groupNumber = 0;
+	for (int i = 0; i < 5; i++) {
+		this->marks[i] = 0;
+	}
+}
+
+Student::Student(const char* name, int gr, int*marks)
+{
+	strcpy_s(this->fullName, 50, name);
+	this->groupNumber = gr;
+	for (int i = 0; i < 5; i++)
+		this->marks[i] = marks[i];
+
+}
+
+Student::~Student()
+{
+}
+
+void Student::print()
+{
+	std::cout <<"\n"<< this->fullName << " " << this->groupNumber << "\n";
+	for (int i = 0; i < 5; i++)
+		std::cout << this->marks[i] << " ";
+}
+
+float Student::getAverage()
+{
+	float sum = 0;
+	for (int i = 0; i < 5; i++) {
+		sum += this->marks[i];
+	}
+	return sum / 5.0f;
+
+}
+
+Student& Student::operator=(const Student& s)
+{
+	if (this != &s) {
+		strcpy_s(this->fullName, 50, s.fullName);
+		this->groupNumber = s.groupNumber;
+		for (int i = 0; i < 5; i++) {
+			this->marks[i] = s.marks[i];
+		}
+	}
+	return *this;
+}
