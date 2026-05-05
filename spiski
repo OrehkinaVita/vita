@@ -1,0 +1,84 @@
+#include <iostream>
+#include "MyList.h"
+
+
+int main() {
+
+	MyList<int> list;
+	for (int i = 0; i < 10; i++)
+		list.addBegin(i);
+	cout << list;
+	string name[] = { "vacy","pety","galy","ira","sacha" };
+	MyList<string> list1;
+	for (string s : name)
+		list1.addBegin(s);
+	cout << "\n" << list1;
+}
+
+
+
+
+
+#pragma once
+#include <fstream>
+using namespace std;
+template <class T>
+class MyList
+{
+
+	class Node {
+	public:
+		T info;
+		Node* next;
+		Node() { next = NULL; }
+		Node(T info, Node* next=NULL): info(info),next(next) { }
+		//Node(T info):info(info), next(NULL) {}
+		friend ostream& operator<<(ostream& os, Node*& n) {
+			return os << n->info;
+		}
+		~Node(){
+			delete info;
+		    delete next;
+		}
+	};
+
+	Node* head = NULL;
+	Node* tail = NULL;
+public:
+	void addEnd(T t) {
+		Node* newNode = new Node(t);
+		if (head == NULL)
+			head = tail = newNode;
+	    else {
+			tail->next = newNode;
+			tail = newNode;
+		}
+	}
+	void addBegin(T t) {
+		Node* newNode = new Node(t);
+		if (head == NULL)
+			head = tail = newNode;
+		else {
+			newNode->next = head;
+			head = newNode;
+		}
+	}
+	void deleteNode(T del) {
+		if (head->info == del) head = head->next;
+		else {
+			Node* h = NULL;
+			for (h = head; h->next && h->next->info != del) {
+
+			}
+		}
+	}
+
+	friend ostream& operator<<(ostream& os, MyList& list) {
+		for (Node* node = list.head; node; node = node->next)
+			os << node << "-->";
+		return os;
+	}
+
+
+	
+};
